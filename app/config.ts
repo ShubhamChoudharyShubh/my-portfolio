@@ -13,4 +13,5 @@ export const socialLinks = {
   instagram: "https://www.instagram.com/shubhamchoudharyshubh/",
   linkedin: "https://www.linkedin.com/in/shubham-choudhary-shubh/",
   email: "mailto:shubhamchoudharyshubh@gmail.com",
+  whatsapp: "https://wa.me/919302418061",
 };

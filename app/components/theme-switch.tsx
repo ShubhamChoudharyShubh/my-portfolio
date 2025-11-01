@@ -3,7 +3,7 @@ import * as React from "react";
 import { useTheme } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes";
-import { FaCircleHalfStroke } from "react-icons/fa6";
+import { FaSun, FaMoon } from "react-icons/fa6";
 
 const storageKey = 'theme-preference';
 
@@ -68,25 +68,34 @@ export const ThemeSwitch: React.FC = () => {
 
   if (!mounted) {
     return (
-      <FaCircleHalfStroke
-        className="h-[14px] w-[14px] text-[#1c1c1c]"
-        aria-hidden="true"
-      />
+      <div className="w-14 h-7 rounded-full bg-neutral-200 dark:bg-neutral-700" />
     );
   }
+
+  const isDark = currentTheme === 'dark';
 
   return (
     <button
       id="theme-toggle"
-      aria-label={`${currentTheme} mode`}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
       onClick={toggleTheme}
-      className="flex items-center justify-center transition-opacity duration-300 hover:opacity-90"
+      className={`relative w-14 h-7 rounded-full transition-all duration-300 ease-in-out ${
+        isDark ? 'bg-neutral-700' : 'bg-neutral-300'
+      } hover:opacity-80`}
     >
-      <FaCircleHalfStroke
-        className={`h-[14px] w-[14px] ${
-          currentTheme === "dark" ? "text-[#D4D4D4]" : "text-[#1c1c1c]"
+      {/* Toggle Circle */}
+      <span
+        className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white dark:bg-neutral-900 shadow-md transform transition-transform duration-300 ease-in-out flex items-center justify-center ${
+          isDark ? 'translate-x-7' : 'translate-x-0'
         }`}
-      />
+      >
+        {/* Icon inside the circle */}
+        {isDark ? (
+          <FaMoon className="w-3.5 h-3.5 text-yellow-400 transition-all duration-300" />
+        ) : (
+          <FaSun className="w-3.5 h-3.5 text-yellow-500 transition-all duration-300" />
+        )}
+      </span>
     </button>
   );
 };
