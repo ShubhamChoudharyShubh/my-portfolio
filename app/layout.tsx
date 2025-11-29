@@ -56,6 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.className}`}>
       <head>
+        <meta name="google-site-verification" content="hvA4F9u58bfFIbD1tyBx_vgBPzPcjpanCGo1VBQtZ1c" />
         <link
           rel="alternate"
           type="application/rss+xml"
