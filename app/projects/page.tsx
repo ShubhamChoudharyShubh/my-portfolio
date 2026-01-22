@@ -55,6 +55,7 @@ export default function Projects() {
                   alt={project.title}
                   width={600}
                   height={300}
+                  loading="lazy"
                   className="h-60 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
