@@ -17,7 +17,6 @@ export default function Page() {
             alt="Shubham Choudhary"
             width={160}
             height={160}
-            unoptimized
             priority
             className="relative rounded-[30px] border-2 border-white object-cover shadow-xl transition duration-500 grayscale hover:grayscale-0 dark:border-neutral-800"
           />

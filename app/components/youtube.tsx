@@ -1,5 +1,16 @@
 "use client";
-import YT from "react-youtube";
+import dynamic from "next/dynamic";
+
+const YT = dynamic(() => import("react-youtube"), {
+  ssr: false,
+  loading: () => (
+    <div 
+      className="relative w-full h-0 pb-[56.25%] my-6 bg-neutral-100 dark:bg-neutral-900 rounded-lg animate-pulse"
+      role="status"
+      aria-label="Loading YouTube video"
+    />
+  ),
+});
 
 export function YouTubeComponent(props: any) {
   return (
