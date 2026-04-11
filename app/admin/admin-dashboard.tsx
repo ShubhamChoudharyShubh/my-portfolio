@@ -100,6 +100,7 @@ export function AdminDashboard() {
     ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress",
   );
   const [projLiveUrl, setProjLiveUrl] = useState("");
+  const [projImageUrl, setProjImageUrl] = useState("");
 
   const supabase = useMemo(() => {
     if (!configured) return null;
@@ -229,9 +230,9 @@ export function AdminDashboard() {
             };
             const res = profileEditId
               ? await supabase
-                  .from("profiles")
-                  .update(payload)
-                  .eq("id", profileEditId)
+                .from("profiles")
+                .update(payload)
+                .eq("id", profileEditId)
               : await supabase.from("profiles").insert(payload);
             if (res.error) setBanner({ kind: "error", text: res.error.message });
             else {
@@ -729,6 +730,7 @@ export function AdminDashboard() {
               tech_stack: projTags,
               category: projCategory,
               live_url: projLiveUrl.trim() || null,
+              image_url: projImageUrl.trim() || null,
             };
             const res = projEditId
               ? await supabase.from("projects").update(payload).eq("id", projEditId)
@@ -742,6 +744,7 @@ export function AdminDashboard() {
               setProjTags([]);
               setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
               setProjLiveUrl("");
+              setProjImageUrl("");
               await reload();
             }
             setBusy(false);
@@ -780,6 +783,13 @@ export function AdminDashboard() {
                 placeholder="https://"
               />
             </Field>
+            <Field label="Image URL (optional)">
+              <TextInput
+                value={projImageUrl}
+                onChange={(e) => setProjImageUrl(e.target.value)}
+                placeholder="https://..."
+              />
+            </Field>
           </div>
           <div className="flex flex-wrap gap-2">
             <PrimaryButton type="submit" disabled={busy}>
@@ -796,6 +806,7 @@ export function AdminDashboard() {
                   setProjTags([]);
                   setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
                   setProjLiveUrl("");
+                  setProjImageUrl("");
                 }}
               >
                 Cancel edit
@@ -832,6 +843,7 @@ export function AdminDashboard() {
                     setProjTags(row.tech_stack ?? []);
                     setProjCategory(row.category);
                     setProjLiveUrl(row.live_url ?? "");
+                    setProjImageUrl(row.image_url ?? "");
                   }}
                 >
                   Edit

@@ -37,7 +37,7 @@ values
     'Present'
   );
 
-insert into public.projects (title, description, tech_stack, category, live_url)
+insert into public.projects (title, description, tech_stack, category, live_url, image_url)
 values
   (
     'The Bake Angels',

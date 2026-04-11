@@ -41,6 +41,7 @@ export type ProjectRow = {
   tech_stack: string[];
   category: string;
   live_url: string | null;
+  image_url: string | null;
   created_at: string;
 };
 

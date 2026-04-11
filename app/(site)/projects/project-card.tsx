@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import Image from "next/image";
 import type { ProjectRow } from "@/lib/types/portfolio";
 
 type ProjectCardProps = {
@@ -10,9 +11,8 @@ type ProjectCardProps = {
 function ChevronIcon({ expanded }: { expanded: boolean }) {
   return (
     <svg
-      className={`h-5 w-5 shrink-0 text-neutral-600 transition-transform duration-300 ease-in-out dark:text-neutral-400 ${
-        expanded ? "rotate-90" : ""
-      }`}
+      className={`h-5 w-5 shrink-0 text-neutral-600 transition-transform duration-300 ease-in-out dark:text-neutral-400 ${expanded ? "rotate-90" : ""
+        }`}
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -48,9 +48,21 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const link = project.live_url?.trim() || "#";
   const detailBlocks = splitDetailBlocks(project.description);
   const year = new Date(project.created_at).getFullYear();
+  const imageUrl = project.image_url?.trim();
 
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+    <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+      {imageUrl && (
+        <div className="relative h-48 w-full overflow-hidden border-b border-neutral-200 dark:border-neutral-800">
+          <Image
+            src={imageUrl}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-500 hover:scale-105"
+            sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
+          />
+        </div>
+      )}
       <div className="border-neutral-200 px-4 pb-4 pt-4 dark:border-neutral-800">
         <button
           type="button"
@@ -77,15 +89,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
           id={panelId}
           role="region"
           aria-labelledby={labelId}
-          className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
-            expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-          }`}
+          className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+            }`}
         >
           <div className="min-h-0 overflow-hidden">
             <div
-              className={`mt-4 space-y-3 border-t border-neutral-200 pt-5 text-sm text-neutral-700 transition-opacity duration-200 ease-in-out dark:border-neutral-800 dark:text-neutral-300 ${
-                expanded ? "opacity-100" : "opacity-0"
-              }`}
+              className={`mt-4 space-y-3 border-t border-neutral-200 pt-5 text-sm text-neutral-700 transition-opacity duration-200 ease-in-out dark:border-neutral-800 dark:text-neutral-300 ${expanded ? "opacity-100" : "opacity-0"
+                }`}
             >
               {tech.length > 0 ? (
                 <div>

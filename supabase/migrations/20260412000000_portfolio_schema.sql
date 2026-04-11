@@ -51,6 +51,7 @@ create table if not exists public.projects (
   tech_stack jsonb not null default '[]'::jsonb,
   category text not null,
   live_url text,
+  image_url text,
   created_at timestamptz not null default now()
 );
 
