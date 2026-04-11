@@ -2,7 +2,7 @@ export const metaData = {
   baseUrl: "https://nextfolio-template.vercel.app/",
   title: "Shubham Choudhary",
   name: "Shubham Choudhary",
-  ogImage: "/shubham.jpg",
+  ogImage: "/shubham.png",
   description:
   "Hi, I'm Shubham – a Freelance WordPress & Web Developer. I build fast, modern, and responsive websites tailored to business goals, with 3+ years of experience and 25+ projects delivered globally.",
 };

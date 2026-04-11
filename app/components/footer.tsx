@@ -15,9 +15,9 @@ function SocialLink({ href, icon: Icon }) {
   return (
     <a
       href={href}
-      target={href.startsWith('http') ? "_blank" : "_self"}
+      target={href.startsWith("http") ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white/50 text-neutral-700 transition-all duration-300 hover:scale-110 hover:border-neutral-400 hover:bg-white hover:text-neutral-900 hover:shadow-md dark:border-neutral-700 dark:bg-neutral-900/50 dark:text-neutral-300 dark:hover:border-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-white"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white text-neutral-700 dark:border-neutral-600 dark:bg-neutral-950 dark:text-neutral-300"
     >
       <Icon className="text-lg" />
     </a>
@@ -42,7 +42,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-12 border-t border-neutral-200 py-8 dark:border-neutral-800">
-      <div className="mx-auto max-w-4xl px-1">
+      <div className="mx-auto px-1">
         <div className="mb-6">
           <h3 className="mb-4 text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Connect with me
@@ -51,9 +51,7 @@ export default function Footer() {
         </div>
 
         <div className="text-sm text-neutral-500 dark:text-neutral-400">
-          <p>
-            &copy; {currentYear} Shubham Choudhary. All rights reserved.
-          </p>
+          <p>&copy; {currentYear} Shubham Choudhary. All rights reserved.</p>
         </div>
       </div>
     </footer>

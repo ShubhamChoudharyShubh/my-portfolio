@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 ::selection {
-  background-color: #47a3f3;
-  color: #fefefe;
+  background-color: #d4d4d4;
+  color: #171717;
+}
+
+.dark ::selection {
+  background-color: #404040;
+  color: #fafafa;
 }
 
 /* Light theme colors */
@@ -56,11 +61,7 @@ html {
 }
 
 .prose a {
-  @apply transition-all decoration-neutral-400 dark:decoration-neutral-600 underline-offset-2 decoration-[0.1em] font-normal text-[#000000] dark:text-[#FFFFFF];
-}
-
-.prose a:hover {
-  @apply dark:decoration-neutral-400 decoration-neutral-600;
+  @apply decoration-neutral-400 dark:decoration-neutral-500 underline-offset-2 decoration-[0.1em] font-normal text-[#000000] dark:text-[#FFFFFF];
 }
 
 .prose .anchor:after {
@@ -148,4 +149,15 @@ table {
 
 .title {
   text-wrap: balance;
+}
+
+@layer utilities {
+  /* Horizontal scroll rows: hide scrollbar, keep touch scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
