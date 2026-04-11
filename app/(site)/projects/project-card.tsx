@@ -53,14 +53,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
       {imageUrl && (
-        <div className="relative h-48 w-full overflow-hidden border-b border-neutral-200 dark:border-neutral-800">
-          <Image
-            src={imageUrl}
-            alt={project.title}
-            fill
-            className="object-cover transition-transform duration-500 hover:scale-105"
-            sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
-          />
+        <div className="px-4 pt-4">
+          <div className="relative h-48 w-full overflow-hidden rounded-xl border border-neutral-100 dark:border-neutral-800">
+            <Image
+              src={imageUrl}
+              alt={project.title}
+              fill
+              className="object-cover transition-transform duration-500 hover:scale-105"
+              sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
+            />
+          </div>
         </div>
       )}
       <div className="border-neutral-200 px-4 pb-4 pt-4 dark:border-neutral-800">
