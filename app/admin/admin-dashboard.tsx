@@ -84,6 +84,7 @@ export function AdminDashboard() {
   const [eduScore, setEduScore] = useState("");
   const [eduStart, setEduStart] = useState("");
   const [eduEnd, setEduEnd] = useState("");
+  const [eduTags, setEduTags] = useState<string[]>([]);
 
   const [expEditId, setExpEditId] = useState<string | null>(null);
   const [expRole, setExpRole] = useState("");
@@ -91,6 +92,7 @@ export function AdminDashboard() {
   const [expDescription, setExpDescription] = useState("");
   const [expStart, setExpStart] = useState("");
   const [expEnd, setExpEnd] = useState("");
+  const [expTags, setExpTags] = useState<string[]>([]);
 
   const [projEditId, setProjEditId] = useState<string | null>(null);
   const [projTitle, setProjTitle] = useState("");
@@ -132,8 +134,22 @@ export function AdminDashboard() {
 
     setProfiles((p.data ?? []) as ProfileRow[]);
     setAboutRows((a.data ?? []) as AboutRow[]);
-    setEducation((e.data ?? []) as EducationRow[]);
-    setExperience((x.data ?? []) as ExperienceRow[]);
+    setEducation(
+      (e.data ?? []).map((row) => ({
+        ...row,
+        tech_stack: Array.isArray(row.tech_stack)
+          ? row.tech_stack.map(String)
+          : [],
+      })) as EducationRow[],
+    );
+    setExperience(
+      (x.data ?? []).map((row) => ({
+        ...row,
+        tech_stack: Array.isArray(row.tech_stack)
+          ? row.tech_stack.map(String)
+          : [],
+      })) as ExperienceRow[],
+    );
     setProjects(
       (pr.data ?? []).map((row) => ({
         ...row,
@@ -459,6 +475,7 @@ export function AdminDashboard() {
               score: eduScore.trim() || null,
               start_year: eduStart.trim(),
               end_year: eduEnd.trim(),
+              tech_stack: eduTags,
             };
             const res = eduEditId
               ? await supabase.from("education").update(payload).eq("id", eduEditId)
@@ -473,6 +490,7 @@ export function AdminDashboard() {
               setEduScore("");
               setEduStart("");
               setEduEnd("");
+              setEduTags([]);
               await reload();
             }
             setBusy(false);
@@ -502,6 +520,9 @@ export function AdminDashboard() {
               <TextInput value={eduEnd} onChange={(e) => setEduEnd(e.target.value)} required />
             </Field>
           </div>
+          <Field label="Skills / Technologies (Tags)">
+            <TagInput value={eduTags} onChange={setEduTags} />
+          </Field>
           <div className="flex flex-wrap gap-2">
             <PrimaryButton type="submit" disabled={busy}>
               {eduEditId ? "Update education" : "Add education"}
@@ -518,6 +539,7 @@ export function AdminDashboard() {
                   setEduScore("");
                   setEduStart("");
                   setEduEnd("");
+                  setEduTags([]);
                 }}
               >
                 Cancel edit
@@ -552,6 +574,7 @@ export function AdminDashboard() {
                     setEduScore(row.score ?? "");
                     setEduStart(row.start_year);
                     setEduEnd(row.end_year);
+                    setEduTags(row.tech_stack ?? []);
                   }}
                 >
                   Edit
@@ -597,6 +620,7 @@ export function AdminDashboard() {
               description: expDescription.trim(),
               start_year: expStart.trim(),
               end_year: expEnd.trim(),
+              tech_stack: expTags,
             };
             const res = expEditId
               ? await supabase.from("experience").update(payload).eq("id", expEditId)
@@ -610,6 +634,7 @@ export function AdminDashboard() {
               setExpDescription("");
               setExpStart("");
               setExpEnd("");
+              setExpTags([]);
               await reload();
             }
             setBusy(false);
@@ -633,6 +658,9 @@ export function AdminDashboard() {
               <TextInput value={expEnd} onChange={(e) => setExpEnd(e.target.value)} required />
             </Field>
           </div>
+          <Field label="Skills / Technologies (Tags)">
+            <TagInput value={expTags} onChange={setExpTags} />
+          </Field>
           <Field label="Description (one bullet per line)">
             <TextArea
               value={expDescription}
@@ -655,6 +683,7 @@ export function AdminDashboard() {
                   setExpDescription("");
                   setExpStart("");
                   setExpEnd("");
+                  setExpTags([]);
                 }}
               >
                 Cancel edit
@@ -688,6 +717,7 @@ export function AdminDashboard() {
                     setExpDescription(row.description);
                     setExpStart(row.start_year);
                     setExpEnd(row.end_year);
+                    setExpTags(row.tech_stack ?? []);
                   }}
                 >
                   Edit

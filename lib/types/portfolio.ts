@@ -21,6 +21,7 @@ export type EducationRow = {
   score: string | null;
   start_year: string;
   end_year: string;
+  tech_stack: string[];
   created_at: string;
 };
 
@@ -31,6 +32,7 @@ export type ExperienceRow = {
   description: string;
   start_year: string;
   end_year: string;
+  tech_stack: string[];
   created_at: string;
 };
 

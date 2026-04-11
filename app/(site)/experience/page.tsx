@@ -58,9 +58,8 @@ export default async function ExperiencePage() {
             return (
               <li
                 key={exp.id}
-                className={`grid grid-cols-[minmax(0,1fr)_2rem] gap-x-4 sm:grid-cols-[minmax(0,1fr)_2.25rem] sm:gap-x-6 ${
-                  isLast ? "pb-0" : "pb-10"
-                }`}
+                className={`grid grid-cols-[minmax(0,1fr)_2rem] gap-x-4 sm:grid-cols-[minmax(0,1fr)_2.25rem] sm:gap-x-6 ${isLast ? "pb-0" : "pb-10"
+                  }`}
               >
                 <article className="relative min-w-0 rounded-2xl border border-neutral-200 bg-white px-4 py-5 dark:border-neutral-800 dark:bg-neutral-950 sm:px-5 sm:py-6">
                   <h2 className="text-lg font-semibold leading-snug text-neutral-900 dark:text-white md:pr-28">
@@ -81,6 +80,19 @@ export default async function ExperiencePage() {
                         <li key={item}>{item}</li>
                       ))}
                     </ul>
+                  ) : null}
+
+                  {exp.tech_stack && exp.tech_stack.length > 0 ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {exp.tech_stack.map((t) => (
+                        <span
+                          key={t}
+                          className="inline-flex items-center rounded-full border border-neutral-300 bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-800 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   ) : null}
                 </article>
 

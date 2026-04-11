@@ -31,6 +31,7 @@ create table if not exists public.education (
   score text,
   start_year text not null,
   end_year text not null,
+  tech_stack jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now()
 );
 
@@ -41,6 +42,7 @@ create table if not exists public.experience (
   description text not null,
   start_year text not null,
   end_year text not null,
+  tech_stack jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now()
 );
 

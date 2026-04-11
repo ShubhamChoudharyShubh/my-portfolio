@@ -14,27 +14,29 @@ values (
   E'Hi, I''m Shubham — a Full-Stack & WordPress Developer passionate about building fast, modern, and scalable web experiences.\n\nI have 3+ years of hands-on experience and have delivered 25+ projects worldwide, working with technologies like React, Next.js, PHP, MySQL, and WordPress.\n\nI''m currently working at MPSEDC - State IT Center as a Graduate Engineer Trainee, focusing on web development and digital solutions.'
 );
 
-insert into public.education (title, institute, field, score, start_year, end_year)
+insert into public.education (title, institute, field, score, start_year, end_year, tech_stack)
 values
-  ('B.Tech in Computer Science & Business Systems', 'SOIT, RGPV Bhopal', 'Computer Science & Engineering', 'CGPA: 7.2 / 10', '2021', '2025'),
-  ('JEE Preparation', 'Allen Career Institute, Kota', 'Engineering Entrance Exam Preparation', '68 Percentile', '2019', '2021'),
-  ('Class 12th (MP Board)', 'Government School, Mandsaur', 'Higher Secondary Education', '83%', '2018', '2019');
+  ('B.Tech in Computer Science & Business Systems', 'SOIT, RGPV Bhopal', 'Computer Science & Engineering', 'CGPA: 7.2 / 10', '2021', '2025', '[]'::jsonb),
+  ('JEE Preparation', 'Allen Career Institute, Kota', 'Engineering Entrance Exam Preparation', '68 Percentile', '2019', '2021', '[]'::jsonb),
+  ('Class 12th (MP Board)', 'Government School, Mandsaur', 'Higher Secondary Education', '83%', '2018', '2019', '[]'::jsonb);
 
-insert into public.experience (role, company, description, start_year, end_year)
+insert into public.experience (role, company, description, start_year, end_year, tech_stack)
 values
   (
     'Graduate Engineering Trainee',
     'MPSeDC - State IT Center',
     E'Contribute to internal web platforms and digital services for state IT initiatives.\nCollaborate with teams to ship maintainable, accessible interfaces.\nSupport delivery timelines through clear documentation and iterative delivery.',
     'Oct 2025',
-    'Present'
+    'Present',
+    '[]'::jsonb
   ),
   (
     'Freelance Web Developer',
     'Self-Employed',
     E'Built and shipped client sites with React, Next.js, PHP, and WordPress.\nOwned requirements, implementation, and handover for 25+ delivered projects.\nFocused on performance, SEO basics, and responsive layouts across devices.',
     'Jan 2022',
-    'Present'
+    'Present',
+    '[]'::jsonb
   );
 
 insert into public.projects (title, description, tech_stack, category, live_url, image_url)
