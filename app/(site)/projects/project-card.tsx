@@ -1,7 +1,6 @@
 "use client";
 
 import { useId, useState } from "react";
-import Image from "next/image";
 import { FaGithub } from "react-icons/fa6";
 import type { ProjectRow } from "@/lib/types/portfolio";
 
@@ -50,44 +49,29 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const githubLink = project.github_url?.trim();
   const detailBlocks = splitDetailBlocks(project.description);
   const displayYear = project.project_year?.trim() || new Date(project.created_at).getFullYear();
-  const imageUrl = project.image_url?.trim();
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
-      {imageUrl && (
-        <div className="p-5">
-          <div className="relative h-48 w-full overflow-hidden rounded-xl border border-neutral-100 dark:border-neutral-800">
-            <Image
-              src={imageUrl}
-              alt={project.title}
-              fill
-              className="object-cover transition-transform duration-500 hover:scale-105"
-              sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
-            />
-          </div>
-        </div>
-      )}
-      <div className="border-neutral-200 px-4 pb-4 pt-4 dark:border-neutral-800">
+    <div className="group overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-all duration-300 hover:border-neutral-300 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-700">
+      <div className="p-6">
         <button
           type="button"
           id={labelId}
           aria-expanded={expanded}
           aria-controls={panelId}
           onClick={() => setExpanded((v) => !v)}
-          className="flex w-full items-start gap-3 rounded-md text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-600"
+          className="flex w-full items-start justify-between gap-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-600"
         >
-          <span className="min-w-0 flex-1">
-            <span className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
               {project.title}
-            </span>
-            <span
-              className="mt-1 block text-sm text-neutral-600 dark:text-neutral-400"
-              dangerouslySetInnerHTML={{ __html: detailBlocks[0] ?? project.description }}
-            />
-          </span>
-          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center">
+            </h3>
+            <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+              {detailBlocks[0] ?? project.description}
+            </p>
+          </div>
+          <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-50 transition-colors group-hover:bg-neutral-100 dark:bg-neutral-900 dark:group-hover:bg-neutral-800">
             <ChevronIcon expanded={expanded} />
-          </span>
+          </div>
         </button>
 
         <div
@@ -99,64 +83,61 @@ export function ProjectCard({ project }: ProjectCardProps) {
         >
           <div className="min-h-0 overflow-hidden">
             <div
-              className={`mt-4 space-y-3 border-t border-neutral-200 pt-5 text-sm text-neutral-700 transition-opacity duration-200 ease-in-out dark:border-neutral-800 dark:text-neutral-300 ${expanded ? "opacity-100" : "opacity-0"
+              className={`space-y-4 pt-6 text-sm text-neutral-700 transition-opacity duration-300 ease-in-out dark:text-neutral-300 ${expanded ? "opacity-100" : "opacity-0"
                 }`}
             >
-              {tech.length > 0 ? (
+              {tech.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                    Tech stack
-                  </p>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {tech.map((t) => (
                       <span
                         key={t}
-                        className="inline-flex items-center rounded-full border border-neutral-300 bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-800 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-200"
+                        className="inline-flex items-center rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400"
                       >
                         {t}
                       </span>
                     ))}
                   </div>
                 </div>
-              ) : null}
+              )}
 
-              {detailBlocks.length > 1 ? (
-                <div className="space-y-2 leading-relaxed">
+              {detailBlocks.length > 1 && (
+                <div className="space-y-3 leading-relaxed">
                   {detailBlocks.slice(1).map((block, i) => (
                     <p key={i} dangerouslySetInnerHTML={{ __html: block }} />
                   ))}
                 </div>
-              ) : null}
+              )}
             </div>
           </div>
         </div>
 
-        <div className="mt-3 flex items-center justify-between">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+        <div className="mt-6 flex items-center justify-between border-t border-neutral-100 pt-4 dark:border-neutral-900">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
             {link !== "#" ? (
-              <>
-                <a
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-neutral-800 underline decoration-neutral-300 underline-offset-2 dark:text-neutral-200 dark:decoration-neutral-600"
-                >
-                  Open project
-                </a>
-                <span className="mx-1.5">·</span>
-              </>
-            ) : null}
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neutral-900 hover:underline dark:text-neutral-100"
+              >
+                Open Project
+              </a>
+            ) : (
+              <span>Open Project</span>
+            )}
+            <span>·</span>
             <span>{displayYear}</span>
-            <span className="mx-1.5">·</span>
+            <span>·</span>
             <span>{project.category}</span>
-          </p>
+          </div>
 
           {githubLink && (
             <a
               href={githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+              className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
               title="View on GitHub"
             >
               <FaGithub size={18} />
