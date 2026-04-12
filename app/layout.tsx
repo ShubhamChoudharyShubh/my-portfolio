@@ -76,11 +76,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased mx-auto mb-20 mt-2 flex flex-col items-center justify-center lg:mb-40 lg:mt-8">
         <ThemeProvider>
-          <main className="flex-auto min-w-0 mt-2 md:mt-6 flex w-full flex-col px-6 sm:px-4 md:px-0 max-w-2xl overflow-hidden">
-            <Navbar />
-            {children}
-            <Footer />
-          </main>
+          {children}
           <Analytics />
           <SpeedInsights />
         </ThemeProvider>

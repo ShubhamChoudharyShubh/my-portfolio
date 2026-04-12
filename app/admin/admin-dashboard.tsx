@@ -25,6 +25,33 @@ import type {
   ProjectRow,
 } from "@/lib/types/portfolio";
 import { ADMIN_PROJECT_CATEGORIES } from "@/lib/types/portfolio";
+import {
+  Briefcase,
+  ChevronRight,
+  Code2,
+  GraduationCap,
+  Info,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  User,
+  X,
+  BarChart3,
+  TrendingUp,
+  Globe,
+  ExternalLink,
+} from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 type Banner = { kind: "success" | "error"; text: string };
 
@@ -32,27 +59,46 @@ function Section({
   title,
   description,
   children,
+  className = "",
 }: {
   title: string;
   description?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section className="space-y-5 rounded-2xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-950">
+    <section className={`space-y-5 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50 ${className}`}>
       <div>
-        <h2 className="text-lg font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
           {title}
         </h2>
         {description ? (
-          <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             {description}
           </p>
         ) : null}
       </div>
-      {children}
+      <div className="pt-2">{children}</div>
     </section>
   );
 }
+
+const MOCK_TRAFFIC_DATA = [
+  { day: "01 Apr", visitors: 120, views: 450 },
+  { day: "02 Apr", visitors: 150, views: 520 },
+  { day: "03 Apr", visitors: 180, views: 610 },
+  { day: "04 Apr", visitors: 140, views: 480 },
+  { day: "05 Apr", visitors: 210, views: 730 },
+  { day: "06 Apr", visitors: 250, views: 890 },
+  { day: "07 Apr", visitors: 230, views: 820 },
+];
+
+const MOCK_STATS = [
+  { label: "Total Visitors", value: "2,480", icon: User, color: "text-blue-500" },
+  { label: "Page Views", value: "10,240", icon: BarChart3, color: "text-purple-500" },
+  { label: "Avg. Session", value: "2m 45s", icon: TrendingUp, color: "text-emerald-500" },
+  { label: "Top Region", value: "India", icon: Globe, color: "text-amber-500" },
+];
 
 export function AdminDashboard() {
   const router = useRouter();
@@ -103,6 +149,17 @@ export function AdminDashboard() {
   );
   const [projLiveUrl, setProjLiveUrl] = useState("");
   const [projImageUrl, setProjImageUrl] = useState("");
+  const [activeSection, setActiveSection] = useState("dashboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const navItems = [
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "profile", label: "Profile", icon: User },
+    { id: "about", label: "About", icon: Info },
+    { id: "education", label: "Education", icon: GraduationCap },
+    { id: "experience", label: "Experience", icon: Briefcase },
+    { id: "projects", label: "Projects", icon: Code2 },
+  ];
 
   const supabase = useMemo(() => {
     if (!configured) return null;
@@ -184,52 +241,73 @@ export function AdminDashboard() {
     return <SupabaseMissing />;
   }
 
-  return (
-    <div className="space-y-8">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
-            Admin dashboard
-          </h1>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            Manage public portfolio content stored in Supabase.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <GhostButton type="button" onClick={() => void reload()} disabled={busy}>
-            Refresh
-          </GhostButton>
-          <GhostButton type="button" onClick={() => void signOut()} disabled={busy}>
-            Sign out
-          </GhostButton>
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100"
-          >
-            View site
-          </Link>
-        </div>
-      </header>
+  const renderMetricsDashboard = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {MOCK_STATS.map((stat) => (
+          <div key={stat.label} className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/50">
+            <div className="flex items-center gap-4">
+              <div className={`rounded-xl bg-neutral-100 p-3 dark:bg-neutral-800 ${stat.color}`}>
+                <stat.icon size={24} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">{stat.label}</p>
+                <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">{stat.value}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
-      {banner ? (
-        <div
-          className={
-            banner.kind === "error"
-              ? "rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-50"
-              : "rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-50"
-          }
-        >
-          {banner.text}
-        </div>
-      ) : null}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Section title="Traffic Overview" description="Monthly visitors and page views">
+          <div className="h-[300px] w-full pt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={MOCK_TRAFFIC_DATA}>
+                <defs>
+                  <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5e5" />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                />
+                <Area type="monotone" dataKey="views" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorViews)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Section>
 
-      {initializing ? (
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">Loading…</p>
-      ) : null}
+        <Section title="Visitor Activity" description="Daily unique visitors">
+          <div className="h-[300px] w-full pt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={MOCK_TRAFFIC_DATA}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5e5" />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                <Tooltip
+                  cursor={{ fill: 'transparent' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                />
+                <Bar dataKey="visitors" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Section>
+      </div>
+    </div>
+  );
 
+  const renderProfileSection = () => (
+    <div className={`grid grid-cols-1 ${profileEditId ? "xl:grid-cols-[1fr_400px]" : ""} gap-8`}>
       <Section
-        title="Profile"
-        description="Public identity used on the home page (latest row wins for the public site)."
+        title={profileEditId ? "Edit Profile" : "Add Profile"}
+        description="Public identity used on the home page."
+        className={profileEditId ? "order-2 xl:order-2" : "order-1"}
       >
         <form
           className="space-y-4"
@@ -245,10 +323,7 @@ export function AdminDashboard() {
               image_url: profileImageUrl.trim() || null,
             };
             const res = profileEditId
-              ? await supabase
-                .from("profiles")
-                .update(payload)
-                .eq("id", profileEditId)
+              ? await supabase.from("profiles").update(payload).eq("id", profileEditId)
               : await supabase.from("profiles").insert(payload);
             if (res.error) setBanner({ kind: "error", text: res.error.message });
             else {
@@ -265,37 +340,23 @@ export function AdminDashboard() {
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Name">
-              <TextInput
-                value={profileName}
-                onChange={(e) => setProfileName(e.target.value)}
-                required
-              />
+              <TextInput value={profileName} onChange={(e) => setProfileName(e.target.value)} required />
             </Field>
             <Field label="Title">
-              <TextInput
-                value={profileTitle}
-                onChange={(e) => setProfileTitle(e.target.value)}
-              />
+              <TextInput value={profileTitle} onChange={(e) => setProfileTitle(e.target.value)} />
             </Field>
           </div>
           <Field label="Bio (optional lead)">
-            <TextArea
-              value={profileBio}
-              onChange={(e) => setProfileBio(e.target.value)}
-            />
+            <TextArea value={profileBio} onChange={(e) => setProfileBio(e.target.value)} />
           </Field>
           <Field label="Image URL (optional)">
-            <TextInput
-              value={profileImageUrl}
-              onChange={(e) => setProfileImageUrl(e.target.value)}
-              placeholder="/shubham.png or https://…"
-            />
+            <TextInput value={profileImageUrl} onChange={(e) => setProfileImageUrl(e.target.value)} placeholder="/shubham.png or https://…" />
           </Field>
           <div className="flex flex-wrap gap-2">
             <PrimaryButton type="submit" disabled={busy}>
               {profileEditId ? "Update profile" : "Add profile"}
             </PrimaryButton>
-            {profileEditId ? (
+            {profileEditId && (
               <GhostButton
                 type="button"
                 disabled={busy}
@@ -309,65 +370,62 @@ export function AdminDashboard() {
               >
                 Cancel edit
               </GhostButton>
-            ) : null}
+            )}
           </div>
         </form>
-
-        <div className="space-y-3 border-t border-neutral-200 pt-5 dark:border-neutral-800">
-          {profiles.map((row) => (
-            <div
-              key={row.id}
-              className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-                  {row.name}
-                </p>
-                <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">
-                  {row.title ?? "—"}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <GhostButton
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    setProfileEditId(row.id);
-                    setProfileName(row.name);
-                    setProfileTitle(row.title ?? "");
-                    setProfileBio(row.bio ?? "");
-                    setProfileImageUrl(row.image_url ?? "");
-                  }}
-                >
-                  Edit
-                </GhostButton>
-                <DangerButton
-                  type="button"
-                  disabled={busy}
-                  onClick={async () => {
-                    if (!supabase) return;
-                    if (!window.confirm("Delete this profile row?")) return;
-                    setBusy(true);
-                    const res = await supabase.from("profiles").delete().eq("id", row.id);
-                    if (res.error) setBanner({ kind: "error", text: res.error.message });
-                    else {
-                      setBanner({ kind: "success", text: "Deleted." });
-                      await reload();
-                    }
-                    setBusy(false);
-                  }}
-                >
-                  Delete
-                </DangerButton>
-              </div>
-            </div>
-          ))}
-        </div>
       </Section>
 
+      <div className="space-y-6 order-1 xl:order-1">
+        <Section title="Existing Profiles">
+          <div className="space-y-3">
+            {profiles.map((row) => (
+              <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-50">{row.name}</p>
+                  <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">{row.title}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <GhostButton
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      setProfileEditId(row.id);
+                      setProfileName(row.name);
+                      setProfileTitle(row.title ?? "");
+                      setProfileBio(row.bio ?? "");
+                      setProfileImageUrl(row.image_url ?? "");
+                    }}
+                  >
+                    Edit
+                  </GhostButton>
+                  <DangerButton
+                    type="button"
+                    disabled={busy}
+                    onClick={async () => {
+                      if (!supabase || !window.confirm("Delete?")) return;
+                      setBusy(true);
+                      await supabase.from("profiles").delete().eq("id", row.id);
+                      await reload();
+                      setBusy(false);
+                    }}
+                  >
+                    Delete
+                  </DangerButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </div>
+    </div>
+  );
+
+  const renderAboutSection = () => (
+    <div className={`grid grid-cols-1 ${aboutEditId ? "xl:grid-cols-[1fr_500px]" : ""} gap-8`}>
       <Section
-        title="About"
-        description="Long-form about copy (latest row wins on the public site). Use blank lines between paragraphs."
+        title={aboutEditId ? "Edit About Copy" : "Add About Copy"}
+        description="Paragraphs appear in the order created. Use blank lines between paragraphs."
+        className={aboutEditId ? "order-2" : "order-1"}
       >
         <form
           className="space-y-4"
@@ -395,13 +453,14 @@ export function AdminDashboard() {
               value={aboutDescription}
               onChange={(e) => setAboutDescription(e.target.value)}
               required
+              rows={6}
             />
           </Field>
           <div className="flex flex-wrap gap-2">
             <PrimaryButton type="submit" disabled={busy}>
               {aboutEditId ? "Update about" : "Add about"}
             </PrimaryButton>
-            {aboutEditId ? (
+            {aboutEditId && (
               <GhostButton
                 type="button"
                 disabled={busy}
@@ -412,55 +471,56 @@ export function AdminDashboard() {
               >
                 Cancel edit
               </GhostButton>
-            ) : null}
+            )}
           </div>
         </form>
-
-        <div className="space-y-3 border-t border-neutral-200 pt-5 dark:border-neutral-800">
-          {aboutRows.map((row) => (
-            <div
-              key={row.id}
-              className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-start sm:justify-between"
-            >
-              <p className="whitespace-pre-wrap text-sm text-neutral-700 dark:text-neutral-200">
-                {row.description}
-              </p>
-              <div className="flex shrink-0 flex-wrap gap-2">
-                <GhostButton
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    setAboutEditId(row.id);
-                    setAboutDescription(row.description);
-                  }}
-                >
-                  Edit
-                </GhostButton>
-                <DangerButton
-                  type="button"
-                  disabled={busy}
-                  onClick={async () => {
-                    if (!supabase) return;
-                    if (!window.confirm("Delete this about row?")) return;
-                    setBusy(true);
-                    const res = await supabase.from("about").delete().eq("id", row.id);
-                    if (res.error) setBanner({ kind: "error", text: res.error.message });
-                    else {
-                      setBanner({ kind: "success", text: "Deleted." });
-                      await reload();
-                    }
-                    setBusy(false);
-                  }}
-                >
-                  Delete
-                </DangerButton>
-              </div>
-            </div>
-          ))}
-        </div>
       </Section>
 
-      <Section title="Education">
+      <div className="space-y-6 order-1">
+        <Section title="Current About Text">
+          <div className="space-y-4">
+            {aboutRows.map((row) => (
+              <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-start sm:justify-between">
+                <p className="whitespace-pre-wrap text-sm text-neutral-700 dark:text-neutral-200">{row.description}</p>
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  <GhostButton
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      setAboutEditId(row.id);
+                      setAboutDescription(row.description);
+                    }}
+                  >
+                    Edit
+                  </GhostButton>
+                  <DangerButton
+                    type="button"
+                    disabled={busy}
+                    onClick={async () => {
+                      if (!supabase || !window.confirm("Delete?")) return;
+                      setBusy(true);
+                      await supabase.from("about").delete().eq("id", row.id);
+                      await reload();
+                      setBusy(false);
+                    }}
+                  >
+                    Delete
+                  </DangerButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </div>
+    </div>
+  );
+
+  const renderEducationSection = () => (
+    <div className={`grid grid-cols-1 ${eduEditId ? "xl:grid-cols-[1fr_400px]" : ""} gap-8`}>
+      <Section
+        title={eduEditId ? "Edit Education" : "Add Education"}
+        className={eduEditId ? "order-2" : "order-1"}
+      >
         <form
           className="space-y-4"
           onSubmit={async (ev) => {
@@ -496,38 +556,30 @@ export function AdminDashboard() {
             setBusy(false);
           }}
         >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field label="Title (degree / program)">
+          <div className="grid grid-cols-1 gap-4">
+            <Field label="Title">
               <TextInput value={eduTitle} onChange={(e) => setEduTitle(e.target.value)} required />
             </Field>
             <Field label="Institute">
-              <TextInput
-                value={eduInstitute}
-                onChange={(e) => setEduInstitute(e.target.value)}
-                required
-              />
+              <TextInput value={eduInstitute} onChange={(e) => setEduInstitute(e.target.value)} required />
             </Field>
-            <Field label="Field">
-              <TextInput value={eduField} onChange={(e) => setEduField(e.target.value)} />
-            </Field>
-            <Field label="Score / highlights (optional)">
-              <TextInput value={eduScore} onChange={(e) => setEduScore(e.target.value)} />
-            </Field>
-            <Field label="Start year">
-              <TextInput value={eduStart} onChange={(e) => setEduStart(e.target.value)} required />
-            </Field>
-            <Field label="End year">
-              <TextInput value={eduEnd} onChange={(e) => setEduEnd(e.target.value)} required />
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Start Year">
+                <TextInput value={eduStart} onChange={(e) => setEduStart(e.target.value)} required />
+              </Field>
+              <Field label="End Year">
+                <TextInput value={eduEnd} onChange={(e) => setEduEnd(e.target.value)} required />
+              </Field>
+            </div>
+            <Field label="Skills (Tags)">
+              <TagInput value={eduTags} onChange={setEduTags} />
             </Field>
           </div>
-          <Field label="Skills / Technologies (Tags)">
-            <TagInput value={eduTags} onChange={setEduTags} />
-          </Field>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             <PrimaryButton type="submit" disabled={busy}>
-              {eduEditId ? "Update education" : "Add education"}
+              {eduEditId ? "Update" : "Add Education"}
             </PrimaryButton>
-            {eduEditId ? (
+            {eduEditId && (
               <GhostButton
                 type="button"
                 disabled={busy}
@@ -542,70 +594,66 @@ export function AdminDashboard() {
                   setEduTags([]);
                 }}
               >
-                Cancel edit
+                Cancel
               </GhostButton>
-            ) : null}
+            )}
           </div>
         </form>
-
-        <div className="space-y-3 border-t border-neutral-200 pt-5 dark:border-neutral-800">
-          {education.map((row) => (
-            <div
-              key={row.id}
-              className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-                  {row.title}
-                </p>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400">
-                  {row.institute} · {row.start_year}–{row.end_year}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <GhostButton
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    setEduEditId(row.id);
-                    setEduTitle(row.title);
-                    setEduInstitute(row.institute);
-                    setEduField(row.field ?? "");
-                    setEduScore(row.score ?? "");
-                    setEduStart(row.start_year);
-                    setEduEnd(row.end_year);
-                    setEduTags(row.tech_stack ?? []);
-                  }}
-                >
-                  Edit
-                </GhostButton>
-                <DangerButton
-                  type="button"
-                  disabled={busy}
-                  onClick={async () => {
-                    if (!supabase) return;
-                    if (!window.confirm("Delete this education row?")) return;
-                    setBusy(true);
-                    const res = await supabase.from("education").delete().eq("id", row.id);
-                    if (res.error) setBanner({ kind: "error", text: res.error.message });
-                    else {
-                      setBanner({ kind: "success", text: "Deleted." });
-                      await reload();
-                    }
-                    setBusy(false);
-                  }}
-                >
-                  Delete
-                </DangerButton>
-              </div>
-            </div>
-          ))}
-        </div>
       </Section>
 
+      <div className="order-1 space-y-4">
+        <Section title="Education List">
+          <div className="space-y-3">
+            {education.map((row) => (
+              <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">{row.title}</p>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400">{row.institute} · {row.start_year}-{row.end_year}</p>
+                </div>
+                <div className="flex gap-2">
+                  <GhostButton
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      setEduEditId(row.id);
+                      setEduTitle(row.title);
+                      setEduInstitute(row.institute);
+                      setEduField(row.field ?? "");
+                      setEduScore(row.score ?? "");
+                      setEduStart(row.start_year);
+                      setEduEnd(row.end_year);
+                      setEduTags(row.tech_stack ?? []);
+                    }}
+                  >
+                    Edit
+                  </GhostButton>
+                  <DangerButton
+                    type="button"
+                    disabled={busy}
+                    onClick={async () => {
+                      if (!supabase || !window.confirm("Delete?")) return;
+                      setBusy(true);
+                      await supabase.from("education").delete().eq("id", row.id);
+                      await reload();
+                      setBusy(false);
+                    }}
+                  >
+                    Delete
+                  </DangerButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </div>
+    </div>
+  );
+
+  const renderExperienceSection = () => (
+    <div className={`grid grid-cols-1 ${expEditId ? "xl:grid-cols-[1fr_450px]" : ""} gap-8`}>
       <Section
-        title="Experience"
-        description="Put each bullet on its own line in the description field."
+        title={expEditId ? "Edit Experience" : "Add Experience"}
+        className={expEditId ? "order-2" : "order-1"}
       >
         <form
           className="space-y-4"
@@ -640,39 +688,33 @@ export function AdminDashboard() {
             setBusy(false);
           }}
         >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field label="Role">
+          <div className="grid grid-cols-1 gap-4">
+            <Field label="Role / Position">
               <TextInput value={expRole} onChange={(e) => setExpRole(e.target.value)} required />
             </Field>
-            <Field label="Company">
-              <TextInput
-                value={expCompany}
-                onChange={(e) => setExpCompany(e.target.value)}
-                required
-              />
+            <Field label="Company / Organization">
+              <TextInput value={expCompany} onChange={(e) => setExpCompany(e.target.value)} required />
             </Field>
-            <Field label="Start">
-              <TextInput value={expStart} onChange={(e) => setExpStart(e.target.value)} required />
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Start Year">
+                <TextInput value={expStart} onChange={(e) => setExpStart(e.target.value)} required />
+              </Field>
+              <Field label="End Year">
+                <TextInput value={expEnd} onChange={(e) => setExpEnd(e.target.value)} required />
+              </Field>
+            </div>
+            <Field label="Skills (Tags)">
+              <TagInput value={expTags} onChange={setExpTags} />
             </Field>
-            <Field label="End">
-              <TextInput value={expEnd} onChange={(e) => setExpEnd(e.target.value)} required />
+            <Field label="Description (one bullet per line)">
+              <TextArea value={expDescription} onChange={(e) => setExpDescription(e.target.value)} required rows={4} />
             </Field>
           </div>
-          <Field label="Skills / Technologies (Tags)">
-            <TagInput value={expTags} onChange={setExpTags} />
-          </Field>
-          <Field label="Description (one bullet per line)">
-            <TextArea
-              value={expDescription}
-              onChange={(e) => setExpDescription(e.target.value)}
-              required
-            />
-          </Field>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             <PrimaryButton type="submit" disabled={busy}>
-              {expEditId ? "Update experience" : "Add experience"}
+              {expEditId ? "Update" : "Add Experience"}
             </PrimaryButton>
-            {expEditId ? (
+            {expEditId && (
               <GhostButton
                 type="button"
                 disabled={busy}
@@ -686,67 +728,66 @@ export function AdminDashboard() {
                   setExpTags([]);
                 }}
               >
-                Cancel edit
+                Cancel
               </GhostButton>
-            ) : null}
+            )}
           </div>
         </form>
-
-        <div className="space-y-3 border-t border-neutral-200 pt-5 dark:border-neutral-800">
-          {experience.map((row) => (
-            <div
-              key={row.id}
-              className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-                  {row.role}
-                </p>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400">
-                  {row.company} · {row.start_year}–{row.end_year}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <GhostButton
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    setExpEditId(row.id);
-                    setExpRole(row.role);
-                    setExpCompany(row.company);
-                    setExpDescription(row.description);
-                    setExpStart(row.start_year);
-                    setExpEnd(row.end_year);
-                    setExpTags(row.tech_stack ?? []);
-                  }}
-                >
-                  Edit
-                </GhostButton>
-                <DangerButton
-                  type="button"
-                  disabled={busy}
-                  onClick={async () => {
-                    if (!supabase) return;
-                    if (!window.confirm("Delete this experience row?")) return;
-                    setBusy(true);
-                    const res = await supabase.from("experience").delete().eq("id", row.id);
-                    if (res.error) setBanner({ kind: "error", text: res.error.message });
-                    else {
-                      setBanner({ kind: "success", text: "Deleted." });
-                      await reload();
-                    }
-                    setBusy(false);
-                  }}
-                >
-                  Delete
-                </DangerButton>
-              </div>
-            </div>
-          ))}
-        </div>
       </Section>
 
-      <Section title="Projects">
+      <div className="order-1 space-y-4">
+        <Section title="Experience History">
+          <div className="space-y-3">
+            {experience.map((row) => (
+              <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-semibold text-neutral-900 dark:text-neutral-50">{row.role}</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">{row.company} · {row.start_year}-{row.end_year}</p>
+                </div>
+                <div className="flex gap-2">
+                  <GhostButton
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      setExpEditId(row.id);
+                      setExpRole(row.role);
+                      setExpCompany(row.company);
+                      setExpDescription(row.description);
+                      setExpStart(row.start_year);
+                      setExpEnd(row.end_year);
+                      setExpTags(row.tech_stack ?? []);
+                    }}
+                  >
+                    Edit
+                  </GhostButton>
+                  <DangerButton
+                    type="button"
+                    disabled={busy}
+                    onClick={async () => {
+                      if (!supabase || !window.confirm("Delete?")) return;
+                      setBusy(true);
+                      await supabase.from("experience").delete().eq("id", row.id);
+                      await reload();
+                      setBusy(false);
+                    }}
+                  >
+                    Delete
+                  </DangerButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </div>
+    </div>
+  );
+
+  const renderProjectsSection = () => (
+    <div className={`grid grid-cols-1 ${projEditId ? "xl:grid-cols-[1fr_500px]" : ""} gap-8`}>
+      <Section
+        title={projEditId ? "Edit Project" : "Add Project"}
+        className={projEditId ? "order-2" : "order-1"}
+      >
         <form
           className="space-y-4"
           onSubmit={async (ev) => {
@@ -780,52 +821,37 @@ export function AdminDashboard() {
             setBusy(false);
           }}
         >
-          <Field label="Title">
-            <TextInput value={projTitle} onChange={(e) => setProjTitle(e.target.value)} required />
-          </Field>
-          <Field label="Description">
-            <TextArea
-              value={projDescription}
-              onChange={(e) => setProjDescription(e.target.value)}
-              required
-            />
-          </Field>
-          <Field label="Tech stack">
-            <TagInput value={projTags} onChange={setProjTags} />
-          </Field>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field label="Category">
-              <Select
-                value={projCategory}
-                onChange={(e) => setProjCategory(e.target.value)}
-              >
-                {ADMIN_PROJECT_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </Select>
+          <div className="space-y-4">
+            <Field label="Project Title">
+              <TextInput value={projTitle} onChange={(e) => setProjTitle(e.target.value)} required />
             </Field>
-            <Field label="Live URL (optional)">
-              <TextInput
-                value={projLiveUrl}
-                onChange={(e) => setProjLiveUrl(e.target.value)}
-                placeholder="https://"
-              />
+            <Field label="Description">
+              <TextArea value={projDescription} onChange={(e) => setProjDescription(e.target.value)} required rows={4} />
             </Field>
-            <Field label="Image URL (optional)">
-              <TextInput
-                value={projImageUrl}
-                onChange={(e) => setProjImageUrl(e.target.value)}
-                placeholder="https://..."
-              />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field label="Category">
+                <Select value={projCategory} onChange={(e) => setProjCategory(e.target.value)}>
+                  {ADMIN_PROJECT_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </Select>
+              </Field>
+              <Field label="Live URL">
+                <TextInput value={projLiveUrl} onChange={(e) => setProjLiveUrl(e.target.value)} placeholder="https://..." />
+              </Field>
+            </div>
+            <Field label="Image URL">
+              <TextInput value={projImageUrl} onChange={(e) => setProjImageUrl(e.target.value)} placeholder="Supabase URL or external..." />
+            </Field>
+            <Field label="Tech Stack (Tags)">
+              <TagInput value={projTags} onChange={setProjTags} />
             </Field>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             <PrimaryButton type="submit" disabled={busy}>
-              {projEditId ? "Update project" : "Add project"}
+              {projEditId ? "Update Project" : "Add Project"}
             </PrimaryButton>
-            {projEditId ? (
+            {projEditId && (
               <GhostButton
                 type="button"
                 disabled={busy}
@@ -839,68 +865,170 @@ export function AdminDashboard() {
                   setProjImageUrl("");
                 }}
               >
-                Cancel edit
+                Cancel Project Edit
               </GhostButton>
-            ) : null}
+            )}
           </div>
         </form>
-
-        <div className="space-y-3 border-t border-neutral-200 pt-5 dark:border-neutral-800">
-          {projects.map((row) => (
-            <div
-              key={row.id}
-              className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-50">
-                  {row.title}
-                </p>
-                <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">
-                  {row.category}
-                  {row.tech_stack.length
-                    ? ` · ${row.tech_stack.join(", ")}`
-                    : ""}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <GhostButton
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    setProjEditId(row.id);
-                    setProjTitle(row.title);
-                    setProjDescription(row.description);
-                    setProjTags(row.tech_stack ?? []);
-                    setProjCategory(row.category);
-                    setProjLiveUrl(row.live_url ?? "");
-                    setProjImageUrl(row.image_url ?? "");
-                  }}
-                >
-                  Edit
-                </GhostButton>
-                <DangerButton
-                  type="button"
-                  disabled={busy}
-                  onClick={async () => {
-                    if (!supabase) return;
-                    if (!window.confirm("Delete this project?")) return;
-                    setBusy(true);
-                    const res = await supabase.from("projects").delete().eq("id", row.id);
-                    if (res.error) setBanner({ kind: "error", text: res.error.message });
-                    else {
-                      setBanner({ kind: "success", text: "Deleted." });
-                      await reload();
-                    }
-                    setBusy(false);
-                  }}
-                >
-                  Delete
-                </DangerButton>
-              </div>
-            </div>
-          ))}
-        </div>
       </Section>
+
+      <div className="order-1 space-y-4">
+        <Section title="Project Portfolio">
+          <div className="space-y-3">
+            {projects.map((row) => (
+              <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-neutral-900 dark:text-neutral-50">{row.title}</p>
+                  <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">{row.category} · {row.tech_stack.slice(0, 3).join(", ")}</p>
+                </div>
+                <div className="flex gap-2">
+                  <GhostButton
+                    type="button"
+                    disabled={busy}
+                    onClick={() => {
+                      setProjEditId(row.id);
+                      setProjTitle(row.title);
+                      setProjDescription(row.description);
+                      setProjTags(row.tech_stack);
+                      setProjCategory(row.category);
+                      setProjLiveUrl(row.live_url ?? "");
+                      setProjImageUrl(row.image_url ?? "");
+                    }}
+                  >
+                    Edit
+                  </GhostButton>
+                  <DangerButton
+                    type="button"
+                    disabled={busy}
+                    onClick={async () => {
+                      if (!supabase || !window.confirm("Delete?")) return;
+                      setBusy(true);
+                      await supabase.from("projects").delete().eq("id", row.id);
+                      await reload();
+                      setBusy(false);
+                    }}
+                  >
+                    Delete
+                  </DangerButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex h-screen w-full overflow-hidden bg-white dark:bg-neutral-950">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white transition-transform duration-300 ease-in-out dark:bg-neutral-900 lg:static lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} border-r border-neutral-200 dark:border-neutral-800 flex flex-col`}>
+        <div className="flex h-16 items-center border-b border-neutral-200 px-6 dark:border-neutral-800">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black text-white dark:bg-white dark:text-black">
+              <Code2 size={18} />
+            </div>
+            <span className="text-xl font-bold tracking-tight">Admin</span>
+          </Link>
+          <button onClick={() => setIsSidebarOpen(false)} className="ml-auto p-2 text-neutral-500 hover:text-neutral-900 lg:hidden dark:text-neutral-400 dark:hover:text-neutral-50">
+            <X size={20} />
+          </button>
+        </div>
+
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-6">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveSection(item.id);
+                setIsSidebarOpen(false);
+              }}
+              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${activeSection === item.id
+                ? "bg-black text-white dark:bg-white dark:text-black shadow-md shadow-black/10"
+                : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
+                }`}
+            >
+              <item.icon size={20} />
+              {item.label}
+              {activeSection === item.id && <ChevronRight size={16} className="ml-auto" />}
+            </button>
+          ))}
+        </nav>
+
+        <div className="border-t border-neutral-200 p-4 dark:border-neutral-800">
+          <button
+            onClick={() => void signOut()}
+            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+          >
+            <LogOut size={20} />
+            Sign out
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Top Header */}
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-neutral-200 bg-white/80 px-4 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/80 md:px-8">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="rounded-lg border border-neutral-200 p-2 text-neutral-500 hover:bg-neutral-100 lg:hidden dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-800"
+            >
+              <Menu size={20} />
+            </button>
+            <h2 className="text-lg font-bold text-neutral-900 dark:text-neutral-50">
+              {navItems.find(i => i.id === activeSection)?.label}
+            </h2>
+          </div>
+          <div className="flex items-center gap-3">
+            <GhostButton onClick={() => void reload()} disabled={busy} className="hidden sm:inline-flex">
+              Sync Data
+            </GhostButton>
+            <Link href="/" target="_blank" className="flex items-center gap-2 rounded-lg bg-neutral-100 px-3 py-2 text-xs font-semibold hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700">
+              Live Site <ExternalLink size={14} />
+            </Link>
+          </div>
+        </header>
+
+        {/* Scrollable Area */}
+        <main className="flex-1 overflow-y-auto bg-neutral-50 p-4 dark:bg-neutral-950 md:p-8">
+          <div className="mx-auto w-full max-w-7xl">
+            {banner && (
+              <div className={`mb-6 flex items-center justify-between rounded-xl border px-4 py-3 text-sm ${banner.kind === "error"
+                ? "border-red-200 bg-red-50 text-red-900 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300"
+                : "border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300"
+                }`}>
+                {banner.text}
+                <button onClick={() => setBanner(null)} className="ml-4 opacity-70 hover:opacity-100"><X size={16} /></button>
+              </div>
+            )}
+
+            {initializing ? (
+              <div className="flex h-64 items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-300 border-t-black dark:border-neutral-700 dark:border-t-white" />
+              </div>
+            ) : (
+              <div className="space-y-12 pb-24">
+                {activeSection === "dashboard" && renderMetricsDashboard()}
+                {activeSection === "profile" && renderProfileSection()}
+                {activeSection === "about" && renderAboutSection()}
+                {activeSection === "education" && renderEducationSection()}
+                {activeSection === "experience" && renderExperienceSection()}
+                {activeSection === "projects" && renderProjectsSection()}
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
