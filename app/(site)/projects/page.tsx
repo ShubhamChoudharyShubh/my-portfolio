@@ -1,11 +1,13 @@
 import { DataError } from "../../components/data-error";
 import { SupabaseMissing } from "../../components/supabase-missing";
 import { fetchProjects } from "@/lib/data/portfolio";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createPublicSupabaseClient } from "@/lib/supabase/server";
 import { ProjectsClient } from "./projects-client";
 
+export const revalidate = 3600;
+
 export default async function ProjectsPage() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (!supabase) {
     return <SupabaseMissing />;
   }

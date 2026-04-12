@@ -1,13 +1,15 @@
 import { DataError } from "../../components/data-error";
 import { SupabaseMissing } from "../../components/supabase-missing";
 import { fetchExperience, parseDescriptionLines } from "@/lib/data/portfolio";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createPublicSupabaseClient } from "@/lib/supabase/server";
+
+export const revalidate = 3600;
 
 const yearBadgeClass =
   "inline-flex w-fit shrink-0 items-center rounded-full border border-neutral-200 bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-800 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 sm:px-3 sm:text-[13px] md:absolute md:right-4 md:top-4 md:mt-0";
 
 export default async function ExperiencePage() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   if (!supabase) {
     return <SupabaseMissing />;
   }
