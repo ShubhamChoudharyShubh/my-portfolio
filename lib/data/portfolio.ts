@@ -44,7 +44,10 @@ export async function fetchEducation(
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return (data ?? []) as EducationRow[];
+  return (data ?? []).map((row) => ({
+    ...row,
+    tech_stack: normalizeTechStack(row.tech_stack),
+  })) as EducationRow[];
 }
 
 export async function fetchExperience(
@@ -56,7 +59,10 @@ export async function fetchExperience(
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return (data ?? []) as ExperienceRow[];
+  return (data ?? []).map((row) => ({
+    ...row,
+    tech_stack: normalizeTechStack(row.tech_stack),
+  })) as ExperienceRow[];
 }
 
 export async function fetchProjects(

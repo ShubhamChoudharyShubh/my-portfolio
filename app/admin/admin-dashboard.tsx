@@ -42,6 +42,7 @@ import {
   ExternalLink,
   Link2,
 } from "lucide-react";
+import { FaGithub } from "react-icons/fa6";
 import {
   Area,
   AreaChart,
@@ -594,9 +595,22 @@ export function AdminDashboard() {
           <div className="space-y-3">
             {education.map((row) => (
               <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">{row.title}</p>
-                  <p className="text-xs text-neutral-600 dark:text-neutral-400">{row.institute} · {row.start_year}-{row.end_year}</p>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                    {row.institute} · {row.start_year}-{row.end_year}
+                    {row.field && ` · ${row.field}`}
+                    {row.score && ` · ${row.score}`}
+                  </p>
+                  {row.tech_stack && row.tech_stack.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {row.tech_stack.slice(0, 5).map((t) => (
+                        <span key={t} className="rounded bg-neutral-100 px-1 py-0.5 text-[10px] text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <GhostButton
@@ -736,9 +750,18 @@ export function AdminDashboard() {
           <div className="space-y-3">
             {experience.map((row) => (
               <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="font-semibold text-neutral-900 dark:text-neutral-50">{row.role}</p>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">{row.company} · {row.start_year}-{row.end_year}</p>
+                  {row.tech_stack && row.tech_stack.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {row.tech_stack.slice(0, 5).map((t) => (
+                        <span key={t} className="rounded bg-neutral-100 px-1 py-0.5 text-[10px] text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <GhostButton
@@ -869,9 +892,16 @@ export function AdminDashboard() {
           <div className="space-y-3">
             {projects.map((row) => (
               <div key={row.id} className="flex flex-col gap-3 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-neutral-900 dark:text-neutral-50">{row.title}</p>
-                  <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">{row.category} · {row.tech_stack.slice(0, 3).join(", ")}</p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="truncate font-semibold text-neutral-900 dark:text-neutral-50">{row.title}</p>
+                    {row.github_url && <FaGithub className="h-3 w-3 text-neutral-400" />}
+                  </div>
+                  <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">
+                    {row.category}
+                    {row.project_year && ` · ${row.project_year}`}
+                    {row.tech_stack.length > 0 && ` · ${row.tech_stack.slice(0, 3).join(", ")}`}
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <GhostButton
