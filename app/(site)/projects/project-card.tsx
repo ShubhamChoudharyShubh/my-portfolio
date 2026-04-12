@@ -53,7 +53,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
       {imageUrl && (
-        <div className="px-4 pt-4">
+        <div className="p-5">
           <div className="relative h-48 w-full overflow-hidden rounded-xl border border-neutral-100 dark:border-neutral-800">
             <Image
               src={imageUrl}
