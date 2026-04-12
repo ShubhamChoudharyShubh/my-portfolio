@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import Image from "next/image";
 import { FaGithub } from "react-icons/fa6";
 import type { ProjectRow } from "@/lib/types/portfolio";
 
@@ -49,27 +50,43 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const githubLink = project.github_url?.trim();
   const detailBlocks = splitDetailBlocks(project.description);
   const displayYear = project.project_year?.trim() || new Date(project.created_at).getFullYear();
+  const imageUrl = project.image_url?.trim();
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-all duration-300 hover:border-neutral-300 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-700">
-      <div className="p-6">
+    <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+      {imageUrl && (
+        <div className="p-5 pb-0">
+          <div className="relative h-48 w-full overflow-hidden rounded-xl border border-neutral-100 dark:border-neutral-800">
+            <Image
+              src={imageUrl}
+              alt={project.title}
+              fill
+              className="object-cover transition-transform duration-500 hover:scale-105"
+              sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
+            />
+          </div>
+        </div>
+      )}
+      <div className="px-6 py-6">
         <button
           type="button"
           id={labelId}
           aria-expanded={expanded}
           aria-controls={panelId}
           onClick={() => setExpanded((v) => !v)}
-          className="flex w-full items-start justify-between gap-4 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-600"
+          className="group flex w-full items-start justify-between text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-600"
         >
           <div className="min-w-0 flex-1">
-            <h3 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
+            <h3 className="text-xl font-bold text-neutral-900 dark:text-neutral-50 mb-1">
               {project.title}
             </h3>
-            <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-              {detailBlocks[0] ?? project.description}
-            </p>
+            {project.subheading && (
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2">
+                {project.subheading}
+              </p>
+            )}
           </div>
-          <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-50 transition-colors group-hover:bg-neutral-100 dark:bg-neutral-900 dark:group-hover:bg-neutral-800">
+          <div className="ml-4 mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-50 group-hover:bg-neutral-100 transition-colors dark:bg-neutral-900 dark:group-hover:bg-neutral-800">
             <ChevronIcon expanded={expanded} />
           </div>
         </button>
@@ -78,32 +95,30 @@ export function ProjectCard({ project }: ProjectCardProps) {
           id={panelId}
           role="region"
           aria-labelledby={labelId}
-          className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          className={`grid transition-[grid-template-rows,margin] duration-300 ease-in-out ${expanded ? "grid-rows-[1fr] mt-6" : "grid-rows-[0fr] mt-0"
             }`}
         >
           <div className="min-h-0 overflow-hidden">
             <div
-              className={`space-y-4 pt-6 text-sm text-neutral-700 transition-opacity duration-300 ease-in-out dark:text-neutral-300 ${expanded ? "opacity-100" : "opacity-0"
+              className={`space-y-6 transition-opacity duration-200 ease-in-out ${expanded ? "opacity-100" : "opacity-0"
                 }`}
             >
               {tech.length > 0 && (
-                <div>
-                  <div className="flex flex-wrap gap-2">
-                    {tech.map((t) => (
-                      <span
-                        key={t}
-                        className="inline-flex items-center rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
+                <div className="flex flex-wrap gap-2">
+                  {tech.map((t) => (
+                    <span
+                      key={t}
+                      className="inline-flex items-center rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400 uppercase tracking-wider"
+                    >
+                      {t}
+                    </span>
+                  ))}
                 </div>
               )}
 
-              {detailBlocks.length > 1 && (
-                <div className="space-y-3 leading-relaxed">
-                  {detailBlocks.slice(1).map((block, i) => (
+              {project.description && (
+                <div className="prose prose-sm dark:prose-invert max-w-none text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                  {detailBlocks.map((block, i) => (
                     <p key={i} dangerouslySetInnerHTML={{ __html: block }} />
                   ))}
                 </div>
@@ -113,22 +128,23 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-neutral-100 pt-4 dark:border-neutral-900">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+          <div className="flex items-center text-xs text-neutral-500 dark:text-neutral-500 font-medium">
             {link !== "#" ? (
               <a
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-neutral-900 hover:underline dark:text-neutral-100"
+                className="hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
+                onClick={(e) => e.stopPropagation()}
               >
                 Open Project
               </a>
             ) : (
-              <span>Open Project</span>
+              <span>Locked Project</span>
             )}
-            <span>·</span>
+            <span className="mx-2 text-neutral-300 dark:text-neutral-700">·</span>
             <span>{displayYear}</span>
-            <span>·</span>
+            <span className="mx-2 text-neutral-300 dark:text-neutral-700">·</span>
             <span>{project.category}</span>
           </div>
 
@@ -137,8 +153,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
               href={githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
+              className="text-neutral-400 hover:text-neutral-900 transition-colors dark:text-neutral-500 dark:hover:text-neutral-100"
               title="View on GitHub"
+              onClick={(e) => e.stopPropagation()}
             >
               <FaGithub size={18} />
             </a>

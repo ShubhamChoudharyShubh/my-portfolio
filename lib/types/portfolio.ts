@@ -47,6 +47,7 @@ export type ProjectRow = {
   project_year: string | null;
   image_url: string | null;
   created_at: string;
+  subheading: string | null;
 };
 
 export const PROJECT_CATEGORIES = [
