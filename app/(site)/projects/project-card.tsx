@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import Image from "next/image";
 import { FaGithub } from "react-icons/fa6";
 import type { ProjectRow } from "@/lib/types/portfolio";
+import { parseDescriptionLines } from "@/lib/data/portfolio";
 
 type ProjectCardProps = {
   project: ProjectRow;
@@ -29,18 +30,6 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
   );
 }
 
-function splitDetailBlocks(text: string) {
-  const blocks = text
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-  if (blocks.length > 0) return blocks;
-  return text
-    .split(/\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
-}
-
 export function ProjectCard({ project }: ProjectCardProps) {
   const [expanded, setExpanded] = useState(false);
   const panelId = useId();
@@ -48,7 +37,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const tech = project.tech_stack;
   const link = project.live_url?.trim() || "#";
   const githubLink = project.github_url?.trim();
-  const detailBlocks = splitDetailBlocks(project.description);
+  const detailBlocks = parseDescriptionLines(project.description);
   const displayYear = project.project_year?.trim() || new Date(project.created_at).getFullYear();
   const imageUrl = project.image_url?.trim();
 
