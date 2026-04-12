@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Image from "next/image";
+import { FaGithub } from "react-icons/fa6";
 import type { ProjectRow } from "@/lib/types/portfolio";
 
 type ProjectCardProps = {
@@ -46,8 +47,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const labelId = useId();
   const tech = project.tech_stack;
   const link = project.live_url?.trim() || "#";
+  const githubLink = project.github_url?.trim();
   const detailBlocks = splitDetailBlocks(project.description);
-  const year = new Date(project.created_at).getFullYear();
+  const displayYear = project.project_year?.trim() || new Date(project.created_at).getFullYear();
   const imageUrl = project.image_url?.trim();
 
   return (
@@ -78,9 +80,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <span className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
               {project.title}
             </span>
-            <span className="mt-1 block text-sm text-neutral-600 dark:text-neutral-400">
-              {detailBlocks[0] ?? project.description}
-            </span>
+            <span
+              className="mt-1 block text-sm text-neutral-600 dark:text-neutral-400"
+              dangerouslySetInnerHTML={{ __html: detailBlocks[0] ?? project.description }}
+            />
           </span>
           <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center">
             <ChevronIcon expanded={expanded} />
@@ -119,8 +122,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
               {detailBlocks.length > 1 ? (
                 <div className="space-y-2 leading-relaxed">
-                  {detailBlocks.slice(1).map((block) => (
-                    <p key={block}>{block}</p>
+                  {detailBlocks.slice(1).map((block, i) => (
+                    <p key={i} dangerouslySetInnerHTML={{ __html: block }} />
                   ))}
                 </div>
               ) : null}
@@ -128,24 +131,38 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </div>
 
-        <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-400">
-          {link !== "#" ? (
-            <>
-              <a
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-neutral-800 underline decoration-neutral-300 underline-offset-2 dark:text-neutral-200 dark:decoration-neutral-600"
-              >
-                Open project
-              </a>
-              <span className="mx-1.5">·</span>
-            </>
-          ) : null}
-          <span>{year}</span>
-          <span className="mx-1.5">·</span>
-          <span>{project.category}</span>
-        </p>
+        <div className="mt-3 flex items-center justify-between">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            {link !== "#" ? (
+              <>
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-neutral-800 underline decoration-neutral-300 underline-offset-2 dark:text-neutral-200 dark:decoration-neutral-600"
+                >
+                  Open project
+                </a>
+                <span className="mx-1.5">·</span>
+              </>
+            ) : null}
+            <span>{displayYear}</span>
+            <span className="mx-1.5">·</span>
+            <span>{project.category}</span>
+          </p>
+
+          {githubLink && (
+            <a
+              href={githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+              title="View on GitHub"
+            >
+              <FaGithub size={18} />
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

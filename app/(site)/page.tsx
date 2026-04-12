@@ -108,13 +108,9 @@ export default async function Page() {
 
           <div className="prose prose-neutral max-w-none dark:prose-invert prose-p:leading-relaxed prose-p:text-pretty prose-a:font-medium prose-a:text-neutral-900 prose-a:underline prose-a:decoration-neutral-400 prose-a:underline-offset-4 dark:prose-a:text-neutral-100 dark:prose-a:decoration-neutral-500">
             {profile.bio ? <p>{profile.bio}</p> : null}
-            {paragraphs.map((p) => (
-              <p key={p}>{p}</p>
+            {paragraphs.map((p, i) => (
+              <p key={i} dangerouslySetInnerHTML={{ __html: p }} />
             ))}
-            <p>
-              Check out my <Link href="/projects">Projects</Link> to see my work
-              or <a href={socialLinks.email}>get in touch</a> to collaborate.
-            </p>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   DangerButton,
   Field,
@@ -40,6 +40,7 @@ import {
   TrendingUp,
   Globe,
   ExternalLink,
+  Link2,
 } from "lucide-react";
 import {
   Area,
@@ -148,7 +149,34 @@ export function AdminDashboard() {
     ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress",
   );
   const [projLiveUrl, setProjLiveUrl] = useState("");
+  const [projGithubUrl, setProjGithubUrl] = useState("");
+  const [projYear, setProjYear] = useState("");
   const [projImageUrl, setProjImageUrl] = useState("");
+
+  const aboutTextRef = useRef<HTMLTextAreaElement>(null);
+  const projDescRef = useRef<HTMLTextAreaElement>(null);
+
+  const insertLink = (ref: React.RefObject<HTMLTextAreaElement | null>, setter: (v: string) => void) => {
+    const textarea = ref.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selectedText = text.substring(start, end);
+    const url = window.prompt("Enter URL:", "https://");
+
+    if (url) {
+      const linkHtml = `<a href="${url}">${selectedText || "link"}</a>`;
+      const newText = text.substring(0, start) + linkHtml + text.substring(end);
+      setter(newText);
+      // Reset focus and selection
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + linkHtml.length, start + linkHtml.length);
+      }, 0);
+    }
+  };
   const [activeSection, setActiveSection] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -534,8 +562,16 @@ export function AdminDashboard() {
               setBusy(false);
             }}
           >
-            <Field label="Description">
+            <Field
+              label="Description"
+              onAction={{
+                icon: Link2,
+                label: "Link",
+                onClick: () => insertLink(aboutTextRef, setAboutDescription),
+              }}
+            >
               <TextArea
+                ref={aboutTextRef}
                 value={aboutDescription}
                 onChange={(e) => setAboutDescription(e.target.value)}
                 required
@@ -854,6 +890,8 @@ export function AdminDashboard() {
                       setProjTags(row.tech_stack);
                       setProjCategory(row.category);
                       setProjLiveUrl(row.live_url ?? "");
+                      setProjGithubUrl(row.github_url ?? "");
+                      setProjYear(row.project_year ?? "");
                       setProjImageUrl(row.image_url ?? "");
                     }}
                   >
@@ -895,6 +933,8 @@ export function AdminDashboard() {
                 tech_stack: projTags,
                 category: projCategory,
                 live_url: projLiveUrl.trim() || null,
+                github_url: projGithubUrl.trim() || null,
+                project_year: projYear.trim() || null,
                 image_url: projImageUrl.trim() || null,
               };
               const res = projEditId
@@ -909,6 +949,8 @@ export function AdminDashboard() {
                 setProjTags([]);
                 setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
                 setProjLiveUrl("");
+                setProjGithubUrl("");
+                setProjYear("");
                 setProjImageUrl("");
                 await reload();
               }
@@ -919,8 +961,21 @@ export function AdminDashboard() {
               <Field label="Project Title">
                 <TextInput value={projTitle} onChange={(e) => setProjTitle(e.target.value)} required />
               </Field>
-              <Field label="Description">
-                <TextArea value={projDescription} onChange={(e) => setProjDescription(e.target.value)} required rows={4} />
+              <Field
+                label="Description"
+                onAction={{
+                  icon: Link2,
+                  label: "Link",
+                  onClick: () => insertLink(projDescRef, setProjDescription),
+                }}
+              >
+                <TextArea
+                  ref={projDescRef}
+                  value={projDescription}
+                  onChange={(e) => setProjDescription(e.target.value)}
+                  required
+                  rows={4}
+                />
               </Field>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field label="Category">
@@ -930,8 +985,16 @@ export function AdminDashboard() {
                     ))}
                   </Select>
                 </Field>
+                <Field label="Project Year">
+                  <TextInput value={projYear} onChange={(e) => setProjYear(e.target.value)} placeholder="e.g. 2024" />
+                </Field>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field label="Live URL">
                   <TextInput value={projLiveUrl} onChange={(e) => setProjLiveUrl(e.target.value)} placeholder="https://..." />
+                </Field>
+                <Field label="Github URL">
+                  <TextInput value={projGithubUrl} onChange={(e) => setProjGithubUrl(e.target.value)} placeholder="https://github.com/..." />
                 </Field>
               </div>
               <Field label="Image URL">
@@ -956,6 +1019,8 @@ export function AdminDashboard() {
                     setProjTags([]);
                     setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
                     setProjLiveUrl("");
+                    setProjGithubUrl("");
+                    setProjYear("");
                     setProjImageUrl("");
                   }}
                 >
