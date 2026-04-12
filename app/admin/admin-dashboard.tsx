@@ -144,6 +144,7 @@ export function AdminDashboard() {
 
   const [projEditId, setProjEditId] = useState<string | null>(null);
   const [projTitle, setProjTitle] = useState("");
+  const [projSubheading, setProjSubheading] = useState("");
   const [projDescription, setProjDescription] = useState("");
   const [projTags, setProjTags] = useState<string[]>([]);
   const [projCategory, setProjCategory] = useState<string>(
@@ -926,6 +927,7 @@ export function AdminDashboard() {
                     onClick={() => {
                       setProjEditId(row.id);
                       setProjTitle(row.title);
+                      setProjSubheading(row.subheading ?? "");
                       setProjDescription(row.description);
                       setProjTags(row.tech_stack);
                       setProjCategory(row.category);
@@ -970,6 +972,7 @@ export function AdminDashboard() {
               setBanner(null);
               const payload = {
                 title: projTitle.trim(),
+                subheading: projSubheading.trim() || null,
                 description: projDescription.trim(),
                 tech_stack: projTags,
                 category: projCategory,
@@ -986,6 +989,7 @@ export function AdminDashboard() {
                 setBanner({ kind: "success", text: "Project saved." });
                 setProjEditId(null);
                 setProjTitle("");
+                setProjSubheading("");
                 setProjDescription("");
                 setProjTags([]);
                 setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
@@ -1002,6 +1006,9 @@ export function AdminDashboard() {
             <div className="space-y-4">
               <Field label="Project Title">
                 <TextInput value={projTitle} onChange={(e) => setProjTitle(e.target.value)} required />
+              </Field>
+              <Field label="Subheading">
+                <TextInput value={projSubheading} onChange={(e) => setProjSubheading(e.target.value)} placeholder="Short catchphrase or overview..." />
               </Field>
               <Field
                 label="Description"
@@ -1057,6 +1064,7 @@ export function AdminDashboard() {
                   onClick={() => {
                     setProjEditId(null);
                     setProjTitle("");
+                    setProjSubheading("");
                     setProjDescription("");
                     setProjTags([]);
                     setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
