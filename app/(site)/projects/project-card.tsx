@@ -117,26 +117,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
               )}
 
               {project.description && (
-                <div className="prose prose-sm dark:prose-invert max-w-none text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                  {detailBlocks.map((block, i) => {
-                    const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
-                    const isList = lines.every(line => /^[-*•]/.test(line));
-
-                    if (isList) {
-                      return (
-                        <ul key={i} className="list-inside list-disc space-y-1 my-4">
-                          {lines.map((line, j) => (
-                            <li key={j} className="pl-1">
-                              <span className="relative -left-1" dangerouslySetInnerHTML={{ __html: line.replace(/^[-*•]\s*/, "") }} />
-                            </li>
-                          ))}
-                        </ul>
-                      );
-                    }
-
-                    return <p key={i} dangerouslySetInnerHTML={{ __html: block }} />;
-                  })}
-                </div>
+                <ul className="list-inside list-disc space-y-2 mt-4 text-sm text-neutral-600 dark:text-neutral-400">
+                  {detailBlocks.map((block, i) => (
+                    <li key={i} dangerouslySetInnerHTML={{ __html: block }} />
+                  ))}
+                </ul>
               )}
             </div>
           </div>

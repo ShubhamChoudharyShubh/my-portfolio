@@ -144,7 +144,6 @@ export function AdminDashboard() {
 
   const [projEditId, setProjEditId] = useState<string | null>(null);
   const [projTitle, setProjTitle] = useState("");
-  const [projSubheading, setProjSubheading] = useState("");
   const [projDescription, setProjDescription] = useState("");
   const [projTags, setProjTags] = useState<string[]>([]);
   const [projCategory, setProjCategory] = useState<string>(
@@ -154,6 +153,7 @@ export function AdminDashboard() {
   const [projGithubUrl, setProjGithubUrl] = useState("");
   const [projYear, setProjYear] = useState("");
   const [projImageUrl, setProjImageUrl] = useState("");
+  const [projSubheading, setProjSubheading] = useState("");
 
   const aboutTextRef = useRef<HTMLTextAreaElement>(null);
   const projDescRef = useRef<HTMLTextAreaElement>(null);
@@ -927,7 +927,6 @@ export function AdminDashboard() {
                     onClick={() => {
                       setProjEditId(row.id);
                       setProjTitle(row.title);
-                      setProjSubheading(row.subheading ?? "");
                       setProjDescription(row.description);
                       setProjTags(row.tech_stack);
                       setProjCategory(row.category);
@@ -935,6 +934,7 @@ export function AdminDashboard() {
                       setProjGithubUrl(row.github_url ?? "");
                       setProjYear(row.project_year ?? "");
                       setProjImageUrl(row.image_url ?? "");
+                      setProjSubheading(row.subheading ?? "");
                     }}
                   >
                     Edit
@@ -972,7 +972,6 @@ export function AdminDashboard() {
               setBanner(null);
               const payload = {
                 title: projTitle.trim(),
-                subheading: projSubheading.trim() || null,
                 description: projDescription.trim(),
                 tech_stack: projTags,
                 category: projCategory,
@@ -980,6 +979,7 @@ export function AdminDashboard() {
                 github_url: projGithubUrl.trim() || null,
                 project_year: projYear.trim() || null,
                 image_url: projImageUrl.trim() || null,
+                subheading: projSubheading.trim() || null,
               };
               const res = projEditId
                 ? await supabase.from("projects").update(payload).eq("id", projEditId)
@@ -989,7 +989,6 @@ export function AdminDashboard() {
                 setBanner({ kind: "success", text: "Project saved." });
                 setProjEditId(null);
                 setProjTitle("");
-                setProjSubheading("");
                 setProjDescription("");
                 setProjTags([]);
                 setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
@@ -997,6 +996,7 @@ export function AdminDashboard() {
                 setProjGithubUrl("");
                 setProjYear("");
                 setProjImageUrl("");
+                setProjSubheading("");
                 await reload();
                 await triggerRevalidate();
               }
@@ -1008,7 +1008,7 @@ export function AdminDashboard() {
                 <TextInput value={projTitle} onChange={(e) => setProjTitle(e.target.value)} required />
               </Field>
               <Field label="Subheading">
-                <TextInput value={projSubheading} onChange={(e) => setProjSubheading(e.target.value)} placeholder="Short catchphrase or overview..." />
+                <TextInput value={projSubheading} onChange={(e) => setProjSubheading(e.target.value)} placeholder="Short catchphrase or summary..." />
               </Field>
               <Field
                 label="Description"
@@ -1064,7 +1064,6 @@ export function AdminDashboard() {
                   onClick={() => {
                     setProjEditId(null);
                     setProjTitle("");
-                    setProjSubheading("");
                     setProjDescription("");
                     setProjTags([]);
                     setProjCategory(ADMIN_PROJECT_CATEGORIES[0] ?? "WordPress");
@@ -1072,6 +1071,7 @@ export function AdminDashboard() {
                     setProjGithubUrl("");
                     setProjYear("");
                     setProjImageUrl("");
+                    setProjSubheading("");
                   }}
                 >
                   Cancel Project Edit
