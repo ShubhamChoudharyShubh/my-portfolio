@@ -981,12 +981,7 @@ export function AdminDashboard() {
 
       <aside className={`fixed inset-y-0 left-0 z-50 transform bg-white transition-all duration-300 ease-in-out dark:bg-neutral-900 lg:static lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} ${isSidebarCollapsed ? "w-20" : "w-64"} border-r border-neutral-200 dark:border-neutral-800 flex flex-col`}>
         <div className={`flex h-16 items-center border-b border-neutral-200 dark:border-neutral-800 ${isSidebarCollapsed ? "justify-center px-0" : "px-6"}`}>
-          <Link href="/" className={`flex items-center gap-2 group ${isSidebarCollapsed ? "justify-center" : ""}`}>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-black text-white dark:bg-white dark:text-black">
-              <Code2 size={18} />
-            </div>
-            {!isSidebarCollapsed && <span className="text-xl font-bold tracking-tight">Admin</span>}
-          </Link>
+          {!isSidebarCollapsed && <span className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">Admin</span>}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             className={`hidden lg:flex p-2 text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 transition-colors rounded-lg ${isSidebarCollapsed ? "mx-auto" : "ml-auto"}`}
