@@ -41,8 +41,8 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-12 border-t border-neutral-200 py-8 dark:border-neutral-800">
-      <div className="mx-auto px-1">
+    <footer className="mt-12 border-t border-neutral-200 py-8 dark:border-neutral-800 w-full">
+      <div className="w-full">
         <div className="mb-6">
           <h3 className="mb-4 text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Connect with me
