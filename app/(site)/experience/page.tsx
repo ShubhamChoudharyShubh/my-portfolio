@@ -77,9 +77,11 @@ export default async function ExperiencePage() {
                   </p>
 
                   {bullets.length > 0 ? (
-                    <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+                    <ul className="mt-4 list-inside list-disc space-y-2 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
                       {bullets.map((item) => (
-                        <li key={item}>{item}</li>
+                        <li key={item} className="pl-1">
+                          <span className="relative -left-1">{item}</span>
+                        </li>
                       ))}
                     </ul>
                   ) : null}

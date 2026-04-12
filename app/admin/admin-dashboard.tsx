@@ -202,6 +202,14 @@ export function AdminDashboard() {
     }
   }, [configured]);
 
+  const triggerRevalidate = async () => {
+    try {
+      await fetch("/api/revalidate");
+    } catch (err) {
+      console.error("Revalidation failed:", err);
+    }
+  };
+
   const reload = useCallback(async () => {
     if (!supabase) return;
     setBusy(true);
@@ -395,6 +403,7 @@ export function AdminDashboard() {
                       setBusy(true);
                       await supabase.from("profiles").delete().eq("id", row.id);
                       await reload();
+                      await triggerRevalidate();
                       setBusy(false);
                     }}
                   >
@@ -439,6 +448,7 @@ export function AdminDashboard() {
                 setProfileBio("");
                 setProfileImageUrl("");
                 await reload();
+                await triggerRevalidate();
               }
               setBusy(false);
             }}
@@ -510,6 +520,7 @@ export function AdminDashboard() {
                       setBusy(true);
                       await supabase.from("about").delete().eq("id", row.id);
                       await reload();
+                      await triggerRevalidate();
                       setBusy(false);
                     }}
                   >
@@ -545,6 +556,7 @@ export function AdminDashboard() {
                 setAboutEditId(null);
                 setAboutDescription("");
                 await reload();
+                await triggerRevalidate();
               }
               setBusy(false);
             }}
@@ -637,6 +649,7 @@ export function AdminDashboard() {
                       setBusy(true);
                       await supabase.from("education").delete().eq("id", row.id);
                       await reload();
+                      await triggerRevalidate();
                       setBusy(false);
                     }}
                   >
@@ -683,6 +696,7 @@ export function AdminDashboard() {
                 setEduEnd("");
                 setEduTags([]);
                 await reload();
+                await triggerRevalidate();
               }
               setBusy(false);
             }}
@@ -787,6 +801,7 @@ export function AdminDashboard() {
                       setBusy(true);
                       await supabase.from("experience").delete().eq("id", row.id);
                       await reload();
+                      await triggerRevalidate();
                       setBusy(false);
                     }}
                   >
@@ -831,6 +846,7 @@ export function AdminDashboard() {
                 setExpEnd("");
                 setExpTags([]);
                 await reload();
+                await triggerRevalidate();
               }
               setBusy(false);
             }}
@@ -929,6 +945,7 @@ export function AdminDashboard() {
                       setBusy(true);
                       await supabase.from("projects").delete().eq("id", row.id);
                       await reload();
+                      await triggerRevalidate();
                       setBusy(false);
                     }}
                   >
@@ -977,6 +994,7 @@ export function AdminDashboard() {
                 setProjYear("");
                 setProjImageUrl("");
                 await reload();
+                await triggerRevalidate();
               }
               setBusy(false);
             }}

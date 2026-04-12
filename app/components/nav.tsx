@@ -9,8 +9,8 @@ import { ThemeSwitch } from "./theme-switch";
 const navItems = {
   "/": { name: "Home" },
   "/projects": { name: "Projects" },
-  "/education": { name: "Education" },
   "/experience": { name: "Experience" },
+  "/education": { name: "Education" },
 };
 
 export function Navbar() {
@@ -81,8 +81,8 @@ export function Navbar() {
         id="nav-dropdown"
         aria-hidden={!isMenuOpen}
         className={`overflow-hidden transition-[max-height,opacity,margin-top] duration-300 ease-in-out ${isMenuOpen
-            ? "pointer-events-auto mt-4 max-h-56 opacity-100"
-            : "pointer-events-none mt-0 max-h-0 opacity-0"
+          ? "pointer-events-auto mt-4 max-h-56 opacity-100"
+          : "pointer-events-none mt-0 max-h-0 opacity-0"
           }`}
       >
         <div
@@ -98,8 +98,8 @@ export function Navbar() {
                   href={path}
                   onClick={closeMenu}
                   className={`flex-1 rounded-md px-1.5 py-2 text-center text-base ${isActive
-                      ? "bg-neutral-100 dark:bg-neutral-800"
-                      : "text-neutral-800 dark:text-neutral-100"
+                    ? "bg-neutral-100 dark:bg-neutral-800"
+                    : "text-neutral-800 dark:text-neutral-100"
                     }`}
                 >
                   {name}
