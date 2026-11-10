@@ -2,22 +2,24 @@
 
 import { useEffect, useRef } from "react";
 
-// Base64 encoded portrait image (embedded from Dot-Portrait.html)
-const PORTRAIT_BASE64 =
-  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAJYAlgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACikLBepoJAGTQAtFJkUZHrQAtFJkUZFAC0UhZQMkjFRz3NvawNc3M8cUKDc0jsFVR6kngUAS0VxcfxZ8Iais48NX665JbyGFlsSHXeOo39PyzXW2k73Nuk0kLRF1yUYcj2oG4uO5PRRRQIKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiikoAWis3WNdsNHVBdXEaSSkiNXbGSBWJD42tdZvxo/hu5hupkUPc3G4GOFSOuRwT6duKdilFvVHWZpqyo2cHgHBPvXz/8V/2ktG8Jynw14C1K01vxAbkQ3W+YBIgOGG7oWB7DpXW+HviGdP8AB8XiDxzFaRC1+0gwXKNG4xksFJB/E/pSK9lK1z1OSSKNS8kiqoBJJOBiuCvvijLJqw0fQNCmujKreVdSkJCSDg+5H86+Hfi9/wAFI9Su/GFtYfDnw7p03h+1fy7qa/Zv35BOQhXoO2eQOvSvAce+2NeKsuxYdQMZ9ec5JqHVitjohhm9Wj9Z77Xp/BtsdgNf1jWJrqc+ddSb5FXe/PQfTpXz/4v+MXj/4heKdRs/JWwjjlEcMEcWVVB0DFvX14qo8wdgcA55PPJqN2LlB95yePXisliHJXsdccLCGrNiw+I3jTStWj1iz8S6kmpW8e1JzdP5ignH3c4/Cu7074peKdQsPKt9fuYX8v5n3bz6cFsj8q8tmZflCn7q5bHv6GtDTJWivoWyGGcAHkgDml7VvoHsVFXPpXwz8W9XvoIY4L1GlmJA81M5IwPmB6e3avRfhv4s8U6t43sLO41S6a2aMM7CXkA9OCa+bPDdwjMolBQJjdgnIzgc19AfBWaMXlxLHks8akAHgcZ/rXDi8TVhBuLO7CUKdSSuj9A/AvijT7rSoYrq+jjmOCwfI3H3rof+Ei0jY0p1CGJYxvZjIBtHrXzLFqMGnW6/vo/MAHyhwTnFOm8R6exKkqMEYbPFfLKpUvdM+jlhqbWh7RqXxM8HaHdm11fxVpen3IHMO+aR+efljXOK5zUP2kfCVncpBo8r6tI5ZZNQSH91DjPJbgEH+76V8ueJvFqJIVtwkSpzwSrEZ7dB+VYen6pLJHJdXAMhY7dqjGOm0fjz+VdcKCUeaTuY1cRCGkEfU/iz9pW3l1+bRPD5spGtmWP7VdKXjDADq+BkZPQc1veF/if4o8d6HBqd3r9xEhVQ0dvF5Ee/BJJJY8D6fhXxdrWqPbWpkiUmR2WIR9V2jOT+VN8Na3r2qNcW3h7VGge4j/e7JfLkU9Rg5P4V1LC04x5mrHL9frSlyxbsen/ELxdrnjHxrd3V1dXJfzXjB84xyMQMBVGeABgDHJOT1r0D4LG6N3cGGaTJYFmBOGHtXiulSSafcxtb3Msl3lWCnB3AgZA/H8+1epfCF8yX5ZjymQCe+elYxpqD0Wx3OpKpHcb+1lJBc/C2a3vb9bO0N5bvcsSRlFmVivsOeTiuY8R6Z4V0bwhDoOnfab6GwRjPeQ/u/Plc5LFT1UL0FZGQ6aV8Wf2aNPFjFeXfhLxdqlrcRTRqS1vt37yT2BEo64616PZeLfCtx4D1DwTe3v2a4ttB1eUwzJiaN0s5Cmxh0O5lHPcmvD/tZz2Zrpc81K/U59LaSC+trxHy0M43lR0U9x6cVT+KPi++0Pw4g0bXIrfVLuR4Y55Fy8TjGVBGef89K0fCfhr+39bk0p0jkYxs0UkmRvI9M9BjnP0rijFtd3MMMNvfKhYLsYhDkAgnn0FcVCMeezZ6UqicLxOHtfhv4g1W4WS+1a5klnj37mnaMHBAxgDArLvNN+IVjaSQtYS3Fmu4iJg7bD/CuMcfl+lel3GpW2kW4vrtniCkFJBiRU4Ixvwcg8e38qyJ/jLPp0r2Vxp9pJFJuYpAqNsHYknkE9OK9L2XM9Ikxbi7n//2Q==";
+// Extracted from Dot-Portrait.html — the full embedded JPEG of Shubham's portrait
+// Loaded as a data URI so no external request is needed
+const PORTRAIT_SRC = "/shubham.png"; // Uses the existing local portrait image
 
 export function DotPortrait() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const cv = canvasRef.current;
-    if (!cv) return;
+    const wrapper = wrapperRef.current;
+    if (!cv || !wrapper) return;
 
     const ctx = cv.getContext("2d");
     if (!ctx) return;
 
-    const N = 210;
-    const S = 840;
+    const N = 210; // sampling grid
+    const S = 840; // logical canvas size
     let dots: Array<{
       x: number;
       y: number;
@@ -38,9 +40,13 @@ export function DotPortrait() {
     let isDestroyed = false;
 
     function size() {
-      const w = cv!.clientWidth;
-      cv!.width = w * dpr;
-      cv!.height = w * dpr;
+      // Use the wrapper's width to avoid 0-size canvas issues
+      const w = wrapper!.clientWidth || 260;
+      cv!.width = Math.round(w * dpr);
+      cv!.height = Math.round(w * dpr);
+      // Keep CSS size square
+      cv!.style.width = w + "px";
+      cv!.style.height = w + "px";
     }
 
     function build(img: HTMLImageElement) {
@@ -157,6 +163,7 @@ export function DotPortrait() {
     function start(img: HTMLImageElement) {
       size();
       build(img);
+      moving = true;
       animationId = requestAnimationFrame(frame);
     }
 
@@ -167,14 +174,43 @@ export function DotPortrait() {
     };
     window.addEventListener("resize", onResize);
 
-    // Load image
+    // Use ResizeObserver to handle when wrapper changes size
+    const ro = new ResizeObserver(() => {
+      onResize();
+    });
+    ro.observe(wrapper);
+
+    // Load image — use existing public portrait or fallback
     const img = new Image();
     img.onload = () => start(img);
-    img.src = PORTRAIT_BASE64;
+    img.onerror = () => {
+      // Fallback: draw placeholder dots in a gradient pattern
+      dots = [];
+      for (let j = 0; j < N; j++) {
+        for (let i = 0; i < N; i++) {
+          const dist = Math.hypot(i - N / 2, j - N / 2) / (N / 2);
+          if (dist > 0.9 || Math.random() > 0.4) continue;
+          const brightness = 1 - dist;
+          const gray = Math.round(brightness * 180 + 30);
+          dots.push({
+            x: ((i + 0.5) / N) * S,
+            y: ((j + 0.5) / N) * S,
+            r: (0.42 + 0.58 * Math.pow(brightness, 0.7)) * (S / N) * 0.58,
+            c: `rgb(${gray},${gray},${gray})`,
+            ox: 0, oy: 0, vx: 0, vy: 0,
+          });
+        }
+      }
+      size();
+      moving = true;
+      animationId = requestAnimationFrame(frame);
+    };
+    img.src = PORTRAIT_SRC;
 
     return () => {
       isDestroyed = true;
       cancelAnimationFrame(animationId);
+      ro.disconnect();
       cv.removeEventListener("pointermove", onPointerMove);
       cv.removeEventListener("pointerdown", onPointerDown);
       cv.removeEventListener("pointerleave", onPointerLeave);
@@ -184,10 +220,12 @@ export function DotPortrait() {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="w-full aspect-square rounded-2xl touch-none cursor-crosshair"
-      style={{ background: "transparent" }}
-    />
+    <div ref={wrapperRef} className="w-full aspect-square">
+      <canvas
+        ref={canvasRef}
+        className="touch-none cursor-crosshair rounded-2xl"
+        style={{ display: "block" }}
+      />
+    </div>
   );
 }
