@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 // Extracted from Dot-Portrait.html — the full embedded JPEG of Shubham's portrait
 // Loaded as a data URI so no external request is needed
-const PORTRAIT_SRC = "/shubham.png"; // Uses the existing local portrait image
+const PORTRAIT_SRC = "/ShubhamChoudharyy.jpg"; // Uses the existing local portrait image
 
 export function DotPortrait() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
